@@ -1,4 +1,4 @@
-module github.com/FanJason/theAnalyst
+module github.com/FanJason/theAnalyst/server
 
 go 1.14
 
