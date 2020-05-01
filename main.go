@@ -2,38 +2,13 @@ package main
 
 import (
 	"log"
-	"fmt"
 	"net/http"
-	"encoding/json"
-	"os"
 
+	"github.com/FanJason/theAnalyst/articles"
 	"github.com/friendsofgo/graphiql"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql-go-handler"
-	"github.com/joho/godotenv"
 )
-
-type Response struct {
-	Status       string
-	TotalResults int
-	Articles     []Article
-}
-
-type Source struct {
-	ID           int
-	Name         string
-}
-
-type Article struct {
-	Source       Source
-	Author       string
-	Title        string
-	Description  string
-	Url          string
-	UrlToImage   string
-	PublishedAt  string
-	Content      string
-}
 
 type User struct {
 	Username    string
@@ -42,34 +17,6 @@ type User struct {
 
 type Comment struct {
 	Body        string
-}
-
-func getEnvVariable(key string) string {
-	err := godotenv.Load(".env")
-	if err != nil {
-		fmt.Printf("failed to get env variable: %v", err)
-	}
-	return os.Getenv(key)
-}
-
-func getArticles() []Article {
-	var apiKey = getEnvVariable("KEY")
-	url := "http://newsapi.org/v2/everything?q=finance&from=2020-04-01&sortBy=publishedAt&apiKey=" + apiKey
-
-	response, err := http.Get(url)
-	if err != nil {
-		fmt.Printf("failed to get api data, error: %v", err)
-	}
-	defer response.Body.Close()
-
-	decoder := json.NewDecoder(response.Body)
-	var data Response
-	err = decoder.Decode(&data)
-
-	if err != nil {
-		fmt.Printf("failed to parse api response: %v", err)
-	}
-	return data.Articles
 }
 
 var sourceType = graphql.NewObject(
@@ -118,9 +65,7 @@ var articleType = graphql.NewObject(
 	},
 )
 
-func main() {
-	articles := getArticles()
-
+func getFields() graphql.Fields {
 	fields := graphql.Fields {
 		"article": &graphql.Field{
 			Type: articleType,
@@ -132,6 +77,7 @@ func main() {
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				title, ok := p.Args["title"].(string)
+				articles := articles.GetArticles()
 				if ok {
 					for _, article := range articles {
 						if string(article.Title) == title {
@@ -146,18 +92,27 @@ func main() {
 			Type: graphql.NewList(articleType),
 			Description: "Get Article List",
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				articles := articles.GetArticles()
 				return articles, nil
 			},
 		},
 	}
+	return fields
+}
 
-	rootQuery := graphql.ObjectConfig{ Name: "RootQuery", Fields: fields }
+func getSchema() graphql.Schema {
+	rootQuery := graphql.ObjectConfig{ Name: "RootQuery", Fields: getFields() }
 	schemaConfig := graphql.SchemaConfig{ Query: graphql.NewObject(rootQuery) }
 	schema, err := graphql.NewSchema(schemaConfig)
 	if err != nil {
 		log.Fatalf("failed to create new schema, error: %v", err)
 	}
+	return schema
+}
 
+func main() {
+	schema := getSchema()
+	
 	h := handler.New(&handler.Config{
 		Schema: &schema,
 		Pretty: true,
