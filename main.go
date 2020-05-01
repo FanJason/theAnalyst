@@ -61,6 +61,12 @@ var articleType = graphql.NewObject(
 			"Content": &graphql.Field{
 				Type: graphql.String,
 			},
+			"TagName": &graphql.Field{
+				Type: graphql.String,
+			},
+			"Confidence": &graphql.Field{
+				Type: graphql.Float,
+			},
 		},
 	},
 )
@@ -77,7 +83,7 @@ func getFields() graphql.Fields {
 			},
 			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 				title, ok := p.Args["title"].(string)
-				articles := articles.GetArticles(3)
+				articles := articles.GetArticles()
 				if ok {
 					for _, article := range articles {
 						if string(article.Title) == title {
@@ -92,7 +98,7 @@ func getFields() graphql.Fields {
 			Type: graphql.NewList(articleType),
 			Description: "Get Article List",
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				articles := articles.GetArticles(3)
+				articles := articles.GetArticles()
 				return articles, nil
 			},
 		},
