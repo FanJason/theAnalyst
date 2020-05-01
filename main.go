@@ -72,10 +72,27 @@ func getArticles() []Article {
 	return data.Articles
 }
 
+var sourceType = graphql.NewObject(
+	graphql.ObjectConfig{
+		Name: "Source",
+		Fields: graphql.Fields{
+			"ID": &graphql.Field{
+				Type: graphql.Int,
+			},
+			"Name": &graphql.Field{
+				Type: graphql.String,
+			},
+		},
+	},
+)
+
 var articleType = graphql.NewObject(
 	graphql.ObjectConfig{
 		Name: "Article",
 		Fields: graphql.Fields{
+			"Source": &graphql.Field{
+				Type: sourceType,
+			},
 			"Author": &graphql.Field{
 				Type: graphql.String,
 			},
