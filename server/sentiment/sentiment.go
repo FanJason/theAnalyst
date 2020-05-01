@@ -1,8 +1,8 @@
 package sentiment
 
 import (
-	"github.com/FanJason/theAnalyst/env"
-	"github.com/FanJason/theAnalyst/request"
+	"github.com/FanJason/theAnalyst/server/env"
+	"github.com/FanJason/theAnalyst/server/request"
 )
 
 type Classification struct {

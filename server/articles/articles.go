@@ -1,9 +1,9 @@
 package articles
 
 import (
-	"github.com/FanJason/theAnalyst/env"
-	"github.com/FanJason/theAnalyst/request"
-	"github.com/FanJason/theAnalyst/sentiment"
+	"github.com/FanJason/theAnalyst/server/env"
+	"github.com/FanJason/theAnalyst/server/request"
+	"github.com/FanJason/theAnalyst/server/sentiment"
 )
 
 type Response struct {

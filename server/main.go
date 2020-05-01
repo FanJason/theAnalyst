@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/FanJason/theAnalyst/articles"
+	"github.com/FanJason/theAnalyst/server/articles"
 	"github.com/friendsofgo/graphiql"
 	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql-go-handler"
@@ -71,6 +71,7 @@ var articleType = graphql.NewObject(
 	},
 )
 
+// TODO: cache results?
 func getFields() graphql.Fields {
 	fields := graphql.Fields {
 		"article": &graphql.Field{
