@@ -1,15 +1,31 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"fmt"
+	"net/http"
+	"encoding/json"
+	"os"
 
-	"github.com/graphql-go/graphql"
 	"github.com/friendsofgo/graphiql"
+	"github.com/graphql-go/graphql"
 	"github.com/graphql-go/graphql-go-handler"
+	"github.com/joho/godotenv"
 )
 
+type Response struct {
+	Status       string
+	TotalResults int
+	Articles     []Article
+}
+
+type Source struct {
+	ID           int
+	Name         string
+}
+
 type Article struct {
+	Source       Source
 	Author       string
 	Title        string
 	Description  string
@@ -28,29 +44,32 @@ type Comment struct {
 	Body        string
 }
 
+func getEnvVariable(key string) string {
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Printf("failed to get env variable: %v", err)
+	}
+	return os.Getenv(key)
+}
+
 func getArticles() []Article {
-	article1 := Article{
-		Author: "Jason",
-		Title: "Test Article 1",
-		Description: "Test description",
-		Url: "url",
-		UrlToImage: "image link",
-		PublishedAt: "04/30/2020",
-		Content: "hello world",
+	var apiKey = getEnvVariable("KEY")
+	url := "http://newsapi.org/v2/everything?q=finance&from=2020-04-01&sortBy=publishedAt&apiKey=" + apiKey
+
+	response, err := http.Get(url)
+	if err != nil {
+		fmt.Printf("failed to get api data, error: %v", err)
 	}
-	article2 := Article{
-		Author: "Jason",
-		Title: "Test Article 2",
-		Description: "Test description",
-		Url: "url",
-		UrlToImage: "image link",
-		PublishedAt: "04/30/2020",
-		Content: "hello world - part 2",
+	defer response.Body.Close()
+
+	decoder := json.NewDecoder(response.Body)
+	var data Response
+	err = decoder.Decode(&data)
+
+	if err != nil {
+		fmt.Printf("failed to parse api response: %v", err)
 	}
-	var articles []Article
-	articles = append(articles, article1)
-	articles = append(articles, article2)
-	return articles
+	return data.Articles
 }
 
 var articleType = graphql.NewObject(
