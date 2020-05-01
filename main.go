@@ -112,7 +112,7 @@ func getSchema() graphql.Schema {
 
 func main() {
 	schema := getSchema()
-	
+
 	h := handler.New(&handler.Config{
 		Schema: &schema,
 		Pretty: true,
