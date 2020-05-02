@@ -18,9 +18,9 @@ type Response struct {
 	Classifications    []Classification
 }
 
-func AnalyzeSentiment(content string) Classification {
+func AnalyzeSentiment(content string) []Response {
 	url := "https://api.monkeylearn.com/v3/classifiers/cl_pi3C7JiL/classify/"
 	var data []Response
 	request.Post(url, content, env.GetEnvVariable("SENTIMENT"), &data)
-	return data[0].Classifications[0]
+	return data
 }

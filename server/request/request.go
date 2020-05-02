@@ -24,8 +24,7 @@ func Get(url string, data interface{}) {
 
 func Post(url string, content string, apiKey string, data interface{}) {
 	method := "POST"
-
-	payload := strings.NewReader("{\"data\": [\"" + content + "\"]}")
+	payload := strings.NewReader(content)
   
 	client := &http.Client{}
 	request, err := http.NewRequest(method, url, payload)
