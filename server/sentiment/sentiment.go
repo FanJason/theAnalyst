@@ -1,8 +1,8 @@
 package sentiment
 
 import (
-	"github.com/FanJason/theAnalyst/server/env"
-	"github.com/FanJason/theAnalyst/server/request"
+	// "github.com/FanJason/theAnalyst/server/env"
+	// "github.com/FanJason/theAnalyst/server/request"
 )
 
 type Classification struct {
@@ -19,8 +19,31 @@ type Response struct {
 }
 
 func AnalyzeSentiment(content string) []Response {
-	url := "https://api.monkeylearn.com/v3/classifiers/cl_pi3C7JiL/classify/"
+	// url := "https://api.monkeylearn.com/v3/classifiers/cl_pi3C7JiL/classify/"
+	// request.Post(url, content, env.GetEnvVariable("SENTIMENT"), &data)
+	// return data
+	classification := Classification{
+			Tag_Name: "Positive",
+			Tag_ID: 123124,
+			Confidence: 0.94,
+		}
+
+	var classifications []Classification
+	classifications = append(classifications, classification)
+	response1 := Response{
+		Text: "test 1",
+		External_ID: 1,
+		Error: false,
+		Classifications: classifications,
+	}
+	response2 := Response{
+		Text: "test 2",
+		External_ID: 2,
+		Error: false,
+		Classifications: classifications,
+	}
 	var data []Response
-	request.Post(url, content, env.GetEnvVariable("SENTIMENT"), &data)
+	data = append(data, response1)
+	data = append(data, response2)
 	return data
 }

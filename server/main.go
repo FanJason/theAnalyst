@@ -117,6 +117,15 @@ func getSchema() graphql.Schema {
 	return schema
 }
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+        w.Header().Set("Access-Control-Allow-Origin", "*")
+        w.Header().Set("Access-Control-Allow-Credentials", "true")
+        w.Header().Set("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH,OPTIONS")
+        next.ServeHTTP(w,r)
+    })
+}
+
 func main() {
 	schema := getSchema()
 
@@ -130,7 +139,7 @@ func main() {
 		panic(err)
 	}
 
-	http.Handle("/graphql", h)
+	http.Handle("/graphql", corsMiddleware(h))
 	http.Handle("/graphiql", graphiqlHandler)
 	http.ListenAndServe(":8080", nil)
 }
