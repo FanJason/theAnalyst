@@ -36,14 +36,7 @@ func AnalyzeSentiment(content string) []Response {
 		Error: false,
 		Classifications: classifications,
 	}
-	response2 := Response{
-		Text: "test 2",
-		External_ID: 2,
-		Error: false,
-		Classifications: classifications,
-	}
 	var data []Response
 	data = append(data, response1)
-	data = append(data, response2)
 	return data
 }

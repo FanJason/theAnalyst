@@ -13,17 +13,20 @@ class ArticleList extends Component {
     }
 
     componentDidMount() {
+        this.getAPIData();
+    }
+
+    getAPIData() {
         const url = "http://localhost:8080/graphql";
-        const query = "{articles {Title Author Description Url UrlToImage PublishedAt TagName Confidence }}";
+        const query = "{articles {Title Author Description Content Url UrlToImage PublishedAt TagName Confidence }}";
         $.post(url, {
             query: query
         },
-        function(response, status) {
-            let newState = this.state
-            newState.articles = response.data.articles;
-            this.setState(newState);
-            console.log(response);
-        }.bind(this));
+        (response, status) => {
+            if (status === "success") {
+                this.setState({ articles: response.data.articles });
+            }
+        });
     }
 
     removeArticle(removeTitle) {
@@ -48,4 +51,4 @@ class ArticleList extends Component {
     }
 }
 
-export default ArticleList
+export default ArticleList;
