@@ -7,7 +7,7 @@ class Article extends Component {
         return rawAuthorName.split(" ").slice(0, 2).join(" ");
     }
 
-    getPublishedAtText(rawPublishedAt) {
+    getPublishedAt(rawPublishedAt) {
         return rawPublishedAt.substr(0, rawPublishedAt.indexOf("T"));
     }
 
@@ -25,7 +25,7 @@ class Article extends Component {
                 <div className="col-lg-7 ml-xl-4 mb-4">
                     <h4 className="mb-3"><strong>{article.Title}</strong></h4>
                     <p>{article.Description}</p>
-                    <p>by <a href="/"><strong>{this.getAuthorName(article.Author)}</strong></a>, {this.getPublishedAtText(article.PublishedAt)}</p>
+                    <p>by <a href="/"><strong>{this.getAuthorName(article.Author)}</strong></a>, {this.getPublishedAt(article.PublishedAt)}</p>
                     <a href={article.Url} target="#" className="btn btn-primary btn-sm">Read more</a>
                 </div>
 

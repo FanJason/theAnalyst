@@ -12,12 +12,13 @@ class ArticleList extends Component {
     }
 
     componentDidMount() {
-        this.getAPIData();
+        const defaultTopic = "finance";
+        this.getAPIData(defaultTopic);
     }
 
-    getAPIData() {
+    getAPIData(topic) {
         const url = "http://localhost:8080/graphql";
-        const query = "{articles {Title Author Description Content Url UrlToImage PublishedAt TagName Confidence }}";
+        const query = "{ articles(topic: \"" + topic +"\") { Title Author Confidence Content Description PublishedAt TagName Title Url UrlToImage } }";
         $.post(url, {
             query: query
         },
