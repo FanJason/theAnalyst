@@ -31,9 +31,9 @@ type Article struct {
 	Confidence   float64
 }
 
-func getAPIArticles() []Article{
+func getAPIArticles(topic string) []Article{
 	// var apiKey = env.GetEnvVariable("NEWS")
-	// url := "http://newsapi.org/v2/everything?q=finance&sortBy=popularity&apiKey=" + apiKey
+	// url := "http://newsapi.org/v2/everything?q=" + topic + "&sortBy=popularity&apiKey=" + apiKey
 	// var data Response
 	// request.Get(url, &data)
 	// return data.Articles
@@ -173,8 +173,8 @@ func getArticlesWithSentiment(articles []Article, response []sentiment.Response)
 	return result
 }
 
-func GetArticles() []Article {
-	articles := getAPIArticles()
+func GetArticles(topic string) []Article {
+	articles := getAPIArticles(topic)
 	titles := getTitles(articles)
 	response := sentiment.AnalyzeSentiment(getContent(titles))
 	results := getArticlesWithSentiment(articles, response)

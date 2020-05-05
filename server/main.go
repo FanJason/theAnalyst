@@ -82,9 +82,9 @@ func getFields() graphql.Fields {
 					Type: graphql.String,
 				},
 			},
-			Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-				title, ok := p.Args["title"].(string)
-				articles := articles.GetArticles()
+			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
+				title, ok := params.Args["title"].(string)
+				articles := articles.GetArticles("finance")
 				if ok {
 					for _, article := range articles {
 						if string(article.Title) == title {
@@ -98,9 +98,18 @@ func getFields() graphql.Fields {
 		"articles": &graphql.Field{
 			Type: graphql.NewList(articleType),
 			Description: "Get Article List",
+			Args: graphql.FieldConfigArgument{
+				"topic": &graphql.ArgumentConfig{
+					Type: graphql.String,
+				},
+			},
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
-				articles := articles.GetArticles()
-				return articles, nil
+				topic, ok := params.Args["topic"].(string)
+				if ok {
+					articles := articles.GetArticles(topic)
+					return articles, nil
+				}
+				return nil, nil
 			},
 		},
 	}
