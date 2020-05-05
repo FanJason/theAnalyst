@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './style/Article.css';
 
+const tagColorMap = {
+    "Positive": "#007bff",
+    "Neutral": "black",
+    "Negative": "#ff3547"
+};
+
 class Article extends Component {
 
     getAuthorName(rawAuthorName) {
@@ -13,6 +19,9 @@ class Article extends Component {
 
     render() {
         const article = this.props.article;
+        const tagStyle = {
+            color: tagColorMap[article.TagName]
+        }
         return (
             <div className="Article row">
 
@@ -30,7 +39,9 @@ class Article extends Component {
                 </div>
 
                 <div className="col-lg-7 ml-xl-4 mb-4">
-                    <h5>Sentiment Analysis: {article.TagName}, Confidence: {article.Confidence}</h5>
+                    <h5>
+                        Sentiment Analysis: <a href="/" style={tagStyle}><strong>{article.TagName}</strong></a>, Confidence: {article.Confidence}
+                    </h5>
                 </div>
                 
             </div>
