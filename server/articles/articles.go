@@ -139,8 +139,13 @@ func getAPIArticles(topic string) []Article{
 
 func getTitles(articles []Article) []string {
 	var titles []string
+	visited := make(map[string]bool)
 	for j := 0;  j < 8; j++ {
-		titles = append(titles, articles[j].Title)
+		title := articles[j].Title;
+		if !visited[title] {
+			titles = append(titles, title)
+			visited[title] = true;
+		}
 	}
 	return titles
 }

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"time"
+	"strconv"
 
 	"github.com/FanJason/theAnalyst/server/articles"
 	"github.com/friendsofgo/graphiql"
@@ -18,6 +21,14 @@ type User struct {
 type Comment struct {
 	Body        string
 }
+
+type CacheEntry struct {
+	date        string
+	articles    []articles.Article
+}
+
+// key: topic, value: CacheEntry
+var cachedArticles = make(map[string]CacheEntry)
 
 var sourceType = graphql.NewObject(
 	graphql.ObjectConfig{
@@ -71,7 +82,32 @@ var articleType = graphql.NewObject(
 	},
 )
 
-// TODO: cache results?
+func compareDates(currentDate string, cachedDate string) bool {
+	currentDay, err1 := strconv.Atoi(currentDate[3:5])
+	cachedDay, err2 := strconv.Atoi(cachedDate[3:5])
+	if err1 != nil || err2 != nil {
+		fmt.Printf("failed to parse date: %v, $v", err1, err2);
+	}
+	return currentDay - cachedDay < 1
+}
+
+func addToCache(topic string) {
+	dt := time.Now()
+	cacheEntry := CacheEntry{
+		date: dt.Format("01-01-2020"),
+		articles: articles.GetArticles(topic),
+	}
+	cachedArticles[topic] = cacheEntry
+}
+
+func isCached(topic string) bool {
+	dt := time.Now()
+	if len(cachedArticles[topic].articles) > 0 {
+		return compareDates(dt.Format("01-01-2020"), cachedArticles[topic].date)
+	}
+	return false
+}
+
 func getFields() graphql.Fields {
 	fields := graphql.Fields {
 		"article": &graphql.Field{
@@ -106,8 +142,10 @@ func getFields() graphql.Fields {
 			Resolve: func(params graphql.ResolveParams) (interface{}, error) {
 				topic, ok := params.Args["topic"].(string)
 				if ok {
-					articles := articles.GetArticles(topic)
-					return articles, nil
+					if !isCached(topic) {
+						addToCache(topic)
+					}
+					return cachedArticles[topic].articles, nil
 				}
 				return nil, nil
 			},

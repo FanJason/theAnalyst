@@ -26,7 +26,6 @@ class Navbar extends Component {
         this.props.searchByTopic(this.state.searchValue);
         this.setState({ searchValue: "" });
         event.preventDefault();
-        
     }
 
     onChange(event) {
