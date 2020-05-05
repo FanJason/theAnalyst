@@ -12,8 +12,7 @@ class ArticleList extends Component {
     }
 
     componentDidMount() {
-        const defaultTopic = "finance";
-        this.getAPIData(defaultTopic);
+        this.getAPIData(this.props.topic);
     }
 
     getAPIData(topic) {
