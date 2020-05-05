@@ -23,7 +23,9 @@ class ArticleList extends Component {
         },
         (response, status) => {
             if (status === "success") {
-                this.setState({ articles: response.data.articles });
+                if (!!response && !!response.data && !!response.data.articles) {
+                    this.setState({ articles: response.data.articles });
+                }
             }
         });
     }
