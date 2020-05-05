@@ -9,7 +9,6 @@ class ArticleList extends Component {
     constructor(props) {
         super(props);
         this.state = { articles: [] };
-        this.removeArticle = this.removeArticle.bind(this);
     }
 
     componentDidMount() {
@@ -29,16 +28,9 @@ class ArticleList extends Component {
         });
     }
 
-    removeArticle(removeTitle) {
-        const filteredArticles = this.state.articles.filter(article => {
-            return article.Title !== removeTitle;
-        });
-        this.setState({ articles: filteredArticles });
-    }
-
     renderArticles() {
         return this.state.articles.map(article =>
-            <Article key={article.Title} article={article} removeArticle={this.removeArticle}/>
+            <Article key={article.Title} article={article}/>
         );
     }
 

@@ -5,10 +5,10 @@ import Navbar from './components/Navbar';
 class App extends Component {
   render() {
     return (
-      <>
-      <Navbar/>
-      <ArticleList/>
-      </>
+      <div className="App">
+        <Navbar/>
+        <ArticleList/>
+      </div>
     );
   }
 }
