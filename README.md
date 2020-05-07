@@ -20,6 +20,7 @@ This will run the server on localhost:8080
 ```sh
 Open a new terminal in the root directory of the project
 cd client
+npm install
 npm start
 ```
 Project is ready to go on localhost:3000!
