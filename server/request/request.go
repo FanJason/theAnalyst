@@ -8,10 +8,15 @@ import (
 )
 
 func Get(url string, data interface{}) {
-	response, err := http.Get(url)
+	client := &http.Client {}
+	request, err := http.NewRequest("GET", url, strings.NewReader("{}"))
+  
 	if err != nil {
-		fmt.Printf("failed to get api data, error: %v", err)
+	  fmt.Println(err)
 	}
+
+	request.Header.Add("Content-Type", "application/json")
+	response, err := client.Do(request)
 	defer response.Body.Close()
 
 	decoder := json.NewDecoder(response.Body)
@@ -35,7 +40,6 @@ func Post(url string, content string, apiKey string, data interface{}) {
 
 	request.Header.Add("Authorization", "Token " + apiKey)
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Content-Type", "text/plain")
   
 	response, err := client.Do(request)
 
